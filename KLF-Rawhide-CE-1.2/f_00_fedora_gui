@@ -1,0 +1,24 @@
+# wiak (William McEwan) License: MIT. Created 06Aug2023 Revised: 13Aug2023
+
+# Change XFCE to GNOME below if you want that instead (ffmpeg-free) / dnf --skip-broken group install
+# dnf --nogpgcheck group install "KDE Plasma Workspaces" -y
+dnf --nogpgcheck group install XFCE -y
+# dnf --nogpgcheck --exclude=kernel* --skip-broken group install XFCE -y # experimental to avoid kernel download: 
+dnf --nogpgcheck install poppler-utils xterm tar wget zstd leafpad mtpaint yad sudo rsync gparted firefox xwininfo dialog xmessage -y
+dnf --nogpgcheck install langpacks-ru man-pages-ru xfce4-xkb-plugin xfce4-weather-plugin xfce4-whiskermenu-plugin -y
+
+# add user spot and set password for user spot (spot:spot - root user:password is root:root)
+useradd -m -G wheel -s /bin/bash spot
+printf "spot\nspot" | passwd spot >/dev/null 2>&1
+echo '%wheel ALL=(ALL) NOPASSWD: ALL' | (VISUAL="tee -a" visudo) # wheel group override to sudo no password required
+
+# optionally add the following non-Fedora binaries packages (disclaimer: experimental - packages untested by me):
+
+# If using 11rox... addon sfs addon we need a symlink to rox stored in /usr/lib/rox directory
+# Folder rox stored in /usr/lib so 11rox... addon sfs also works with FR Void Linux and Arch Linux based distros
+# No harm including this symlink anyway
+ln -s /usr/lib/rox /usr/lib64/rox
+
+#Avoid updating/fetching new kernels/modules later
+echo exclude=kernel* redhat-release* >> /etc/dnf/dnf.conf
+

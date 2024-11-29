@@ -1,0 +1,63 @@
+#!/bin/bash
+## wd_grubconfig
+# Determine FirstRib grub stanzas for menu.lst and grub.conf
+# Revision Date: 28 Oct 2022
+# Copyright wiak (William McEwan) 30 May 2022+; Licence: MIT
+
+## Run this script from your FirstRib distro installation directory
+
+progname="wd_grubconfig"; version="1.0.0"; revision="-rc1"
+
+case "$1" in
+	'--version') printf "$progname ${version}${revision}\n"; exit 0;;
+	'-h'|'--help'|'-?') printf "Run this script from your FirstRib distro installation directory with command:
+  ./wd_grubconfig\n";exit 0;;
+	"-*") printf "option $1 not available\n";exit 0;;
+esac
+
+_grub_config (){
+	cd "$PWD"
+	subdir="$bootdir"
+	bootuuid=`df . | awk '/^\/dev/ {print $1}' | xargs blkid -s UUID | awk -F\" '{print $2}'`
+	bootlabel=`df . | awk '/^\/dev/ {print $1}' | xargs blkid -s LABEL | awk -F\" '{print $2}'`
+	printf "
+Assuming names: kernel is vmlinuz and initrd is initrd.gz and booting is
+from this build directory and needed modules and firmware are present:
+
+#####menu.lst (note the LABEL or UUID options below):
+title $subdir
+  find --set-root --ignore-floppies /${subdir}/grub_config.txt
+  kernel /$subdir/vmlinuz w_bootfrom=LABEL=${bootlabel}=/$subdir w_changes=RAM2
+  initrd /$subdir/initrd.gz
+#############################OR uuid method:
+title $subdir
+  find --set-root uuid () $bootuuid
+  kernel /$subdir/vmlinuz w_bootfrom=UUID=${bootuuid}=/$subdir w_changes=RAM2
+  initrd /$subdir/initrd.gz
+
+#####grub.cfg (note the UUID or LABEL options below):
+menuentry \"${subdir}\" {
+  insmod ext2
+  search --no-floppy --label $bootlabel --set
+  linux /$subdir/vmlinuz w_bootfrom=LABEL=${bootlabel}=/$subdir w_changes=RAM2
+  initrd /$subdir/initrd.gz
+}
+#############################OR uuid method:
+menuentry \"${subdir}\" {
+  insmod ext2
+  search --no-floppy --fs-uuid --set $bootuuid
+  linux /$subdir/vmlinuz w_bootfrom=UUID=${bootuuid}=/$subdir w_changes=RAM2
+  initrd /$subdir/initrd.gz
+}
+
+Refer to $PWD/grub_config.txt for
+copy of this information plus blkid info.
+Note that you can remove w_changes=RAM2 if you don't want
+save session on demand mode.\n" | tee grub_config.txt
+	blkid -s UUID >> grub_config.txt
+}
+
+PWD="`pwd`"
+bootdir=`basename "$PWD"` # for use with grub config
+_grub_config
+exit 0

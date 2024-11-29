@@ -1,0 +1,28 @@
+# addon code such as FR utils and numbered sfs addons that can/will be loaded added to overlay during boot
+# wiak Created: 13Aug2023; Revised: 16Aug2023
+
+# Main KL addon containing the likes of gtkdialog, filemnt, UExtract, gxmessage, and more
+wget -c https://gitlab.com/firstrib/firstrib/-/raw/master/latest/build_system/12KL_gtkdialogGTK3filemnt64.sfs
+wget -c https://gitlab.com/firstrib/firstrib/-/raw/master/latest/build_system/initrd-latest.gz -O initrd.gz  # FR skeleton initrd.gz
+
+# The following are optional (disclaimer: may be untested or had limited testing so use at own risk like everything else provided by FirstRib/KL build system):
+
+# Roxfiler install (made from Fedora 38 rpm provided by rockedge):
+wget -c https://gitlab.com/firstrib/firstrib/-/raw/master/latest/build_system/11r_rox-filer-2.11-1.x86_64.sfs
+
+# Some useful FR utilities for distro builders
+wget -c https://gitlab.com/firstrib/firstrib/-/raw/master/latest/build_system/wd_grubconfig && chmod +x wd_grubconfig
+wget -c https://gitlab.com/firstrib/firstrib/-/raw/master/latest/build_system/modify_initrd_gz.sh && chmod +x modify_initrd_gz.sh
+wget -c https://gitlab.com/firstrib/firstrib/-/raw/master/latest/build_system/mount_chroot.sh && chmod +x mount_chroot.sh
+wget -c https://gitlab.com/firstrib/firstrib/-/raw/master/latest/build_system/umount_chroot.sh && chmod +x umount_chroot.sh
+
+# Number the layer ready for booting
+mv firstrib_rootfs 07firstrib_rootfs
+
+
+# Under-test/optional addons: NOTE WELL: uncomment below wget line(s) to use these
+
+# poorercputemp;From Sofiya
+# wget -c https://gitlab.com/firstrib/firstrib/-/raw/master/latest/build_system/14poorercputemp_usrlocalbin-0.2_1.x86_64.sfs -O 14poorercputemp_usrlocalbin-0.2_1.x86_64.sfs
+wget -c https://gitlab.com/sofija.p2018/kla-ot2/-/raw/main/KLF/14poorercputemp_usrlocalbin-0.3.x86_64.sfs
+
