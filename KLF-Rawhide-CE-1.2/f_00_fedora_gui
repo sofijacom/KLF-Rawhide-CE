@@ -1,7 +1,6 @@
 # wiak (William McEwan) License: MIT. Created 06Aug2023 Revised: 13Aug2023
 
 # Change XFCE to GNOME below if you want that instead (ffmpeg-free) / dnf --skip-broken group install
-# dnf --nogpgcheck group install "KDE Plasma Workspaces" -y
 dnf --nogpgcheck group install XFCE -y
 # dnf --nogpgcheck --exclude=kernel* --skip-broken group install XFCE -y # experimental to avoid kernel download: 
 dnf --nogpgcheck install poppler-utils xterm tar wget zstd leafpad mtpaint yad sudo rsync gparted firefox xwininfo dialog xmessage -y
